@@ -1,4 +1,6 @@
-﻿const db = require('_helpers/db');
+﻿const { ObjectID } = require('mongodb');
+const db = require('_helpers/db');
+const mailer = require('_helpers/sendMail')
 const User = db.User;
 
 module.exports = {
@@ -7,7 +9,8 @@ module.exports = {
     logout,
     generateOTP, 
     verifyOTP,
-    activateUser
+    activateUser,
+    getUserById
 };
 
 async function login(data) {
@@ -23,13 +26,10 @@ async function login(data) {
 
     const user = await User.findOne({email: email, mobile: mobile})
     if (user) {
-        if(user.activated) {
-            return user.toJSON()
-        } else {
+        if(!user.activated) {
             await generateOTP(user);
-            throw "User not verified"
-        }
-        
+        } 
+        return user.toJSON()
     } else {
         throw 'Invalid Mobile/Email entered';
     }
@@ -69,6 +69,8 @@ async function register(data) {
     await user.save();
 
     await generateOTP(user);
+
+    return user.toJSON()
 }
 
 async function logout() {
@@ -76,22 +78,20 @@ async function logout() {
 }
 
 async function generateOTP(user) {
-    var createdDate = Math.floor(new Date().getTime() / 1000);
-    console.log('created Date -> ', createdDate);
-    console.log('validity -> ', createdDate + 1500);
-
     user.otp = parseInt(Math.random() * 1000000);
     user.save();
+
+    mailer.sendOTP(user.email, user.otp);
 }
 
 async function verifyOTP(data) {
-    const { otp, email, mobile } = data;
+    const { otp, id } = data;
 
     if (!otp) {
         throw "Please enter OTP received";
     }
 
-    const user = await User.findOne({email: email, mobile: mobile})
+    const user = await User.findOne({_id: id})
     if (user) {
         if(user.otp != otp) {
             throw 'Invalid OTP entered';
@@ -99,7 +99,7 @@ async function verifyOTP(data) {
             activateUser(user);
         }
     } else {
-        throw 'Invalid Mobile/Email entered';
+        throw 'User not found';
     }
     
 }
@@ -109,4 +109,8 @@ async function activateUser(user) {
     user.otp = 000000;
 
     await user.save();
+}
+
+async function getUserById(id) {
+    return await User.findById(ObjectID(id));
 }

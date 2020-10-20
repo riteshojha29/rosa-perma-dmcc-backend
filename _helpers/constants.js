@@ -5,6 +5,7 @@ const FAILURE_CODE = 1;
 const USER_CREATED = 'User created';
 const LOGIN_SUCCESS = 'Login successful';
 const OTP_VERIFICATION_SUCCESS = 'verification successful';
+const JOB_APPLICATION_SUCCESS = 'Job Application Submitted';
 
 
 module.exports = Object.freeze({
@@ -12,5 +13,6 @@ module.exports = Object.freeze({
     FAILURE: FAILURE_CODE,
     USER_CREATED: USER_CREATED,
     LOGIN_SUCCESS: LOGIN_SUCCESS,
-    OTP_VERIFICATION_SUCCESS: OTP_VERIFICATION_SUCCESS
+    OTP_VERIFICATION_SUCCESS: OTP_VERIFICATION_SUCCESS,
+    JOB_APPLICATION_SUCCESS: JOB_APPLICATION_SUCCESS
 });

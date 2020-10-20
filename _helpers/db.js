@@ -5,5 +5,11 @@ mongoose.connect(process.env.MONGODB_URI || config.connectionString, connectionO
 mongoose.Promise = global.Promise;
 
 module.exports = {
-    User: require('../users/user.model')
+    User: require('../users/user.model'),
+    Country: require('../locations/countries/country.model'),
+    Region: require('../locations/regions/region.model'),
+    State: require('../locations/states/state.model'),
+    Town: require('../locations/towns/town.model'),
+    Job: require('../locations/jobs/job.model'),
+    JobApplication: require('../job_application/jobApplication.model')
 };

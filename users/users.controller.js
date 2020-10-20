@@ -26,9 +26,10 @@ function login(req, res, next) {
 
 function register(req, res, next) {
     userService.register(req.body)
-        .then(() => res.json({
+        .then(user => res.json({
             statusCode: constants.SUCCESS, 
-            message:constants.USER_CREATED 
+            message:constants.USER_CREATED,
+            data: user
         }))
         .catch(err => next(res.json({
             statusCode: constants.FAILURE,  
